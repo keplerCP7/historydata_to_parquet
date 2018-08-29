@@ -1,4 +1,4 @@
---adding coments xxxxxx
+--adding coments xxxxxx kkkkkkkk
 
 CREATE EXTERNAL TABLE tmp_fvtaproebecam(
    codpais                    varchar(2),
