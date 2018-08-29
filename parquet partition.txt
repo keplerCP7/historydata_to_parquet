@@ -1,4 +1,4 @@
-
+--adding coments
 
 CREATE EXTERNAL TABLE tmp_fvtaproebecam(
    codpais                    varchar(2),
@@ -98,7 +98,7 @@ set hive.mv.files.thread=25;
 set hive.blobstore.optimizations.enabled=false;
 set parquet.compression=snappy;
 
---Time to convert and export. This step will run for a long time, depending on your data size and cluster size. 
+--Time to convert and export. This step will run for a long time, depending on your data size and cluster size.
 INSERT INTO TABLE tblpq_fvtaproebecam partition(codpais, aniocampana)
 SELECT codcanalventa,
        aniocampanaref,
@@ -140,5 +140,3 @@ SELECT codcanalventa,
        codpais,
        aniocampana
 FROM tmp_fvtaproebecam;
-
-
