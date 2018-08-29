@@ -1,0 +1,144 @@
+
+
+CREATE EXTERNAL TABLE tmp_fvtaproebecam(
+   codpais                    varchar(2),
+   codcanalventa              varchar(2),
+   aniocampana                varchar(6),
+   aniocampanaref             varchar(6),
+   pkebelista                 integer,
+   pkpedido                   integer,
+   pktipooferta               smallint,
+   pkterritorio               integer,
+   pkproducto                 integer,
+   codventa                   varchar(6),
+   codtipodocumento           varchar(1),
+   codacceso                  smallint,
+   realuuvendidas             integer,
+   realuufaltantes            integer,
+   realuudevueltas            integer,
+   realuuanuladas             integer,
+   realvtamnneto              float,
+   realvtamnfactura           float,
+   realvtamncatalogo          float,
+   realvtamnfaltneto          float,
+   realvtamnfaltcatalogo      float,
+   realdevmnneto              float,
+   realdevmncatalogo          float,
+   realanulmnneto             float,
+   realanulmncatalogo         float,
+   costoreposicionmn          float,
+   realtcpromedio             decimal,
+   oportunidadahorromn        decimal,
+   descuento                  decimal,
+   codpalancapersonalizacion  varchar(3),
+   despalancapersonalizacion  varchar(100),
+   codorigenpedidoweb         integer,
+   esttcpromedio              decimal,
+   codebelista                varchar(15),
+   codtipooferta              varchar(4),
+   codsap                     varchar(18),
+   codterritorio              varchar(10),
+   nrofactura                 varchar(11),
+   medioventa                 varchar(3))
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
+LOCATION 's3://hdata-belcorp/';
+
+msck repair table tmp_fvtaproebecam;
+
+CREATE EXTERNAL TABLE tblpq_fvtaproebecam(
+   codcanalventa              varchar(2),
+   aniocampanaref             varchar(6),
+   pkebelista                 integer,
+   pkpedido                   integer,
+   pktipooferta               smallint,
+   pkterritorio               integer,
+   pkproducto                 integer,
+   codventa                   varchar(6),
+   codtipodocumento           varchar(1),
+   codacceso                  smallint,
+   realuuvendidas             integer,
+   realuufaltantes            integer,
+   realuudevueltas            integer,
+   realuuanuladas             integer,
+   realvtamnneto              float,
+   realvtamnfactura           float,
+   realvtamncatalogo          float,
+   realvtamnfaltneto          float,
+   realvtamnfaltcatalogo      float,
+   realdevmnneto              float,
+   realdevmncatalogo          float,
+   realanulmnneto             float,
+   realanulmncatalogo         float,
+   costoreposicionmn          float,
+   realtcpromedio             decimal,
+   oportunidadahorromn        decimal,
+   descuento                  decimal,
+   codpalancapersonalizacion  varchar(3),
+   despalancapersonalizacion  varchar(100),
+   codorigenpedidoweb         integer,
+   esttcpromedio              decimal,
+   codebelista                varchar(15),
+   codtipooferta              varchar(4),
+   codsap                     varchar(18),
+   codterritorio              varchar(10),
+   nrofactura                 varchar(11),
+   medioventa                 varchar(3))
+PARTITIONED BY(codpais varchar(2), aniocampana varchar(6))
+STORED AS PARQUET
+LOCATION 's3://hdata-belcorp/parquet/';
+
+
+set hive.exec.dynamic.partition.mode=nonstrict;
+set hive.exec.reducers.bytes.per.reducer=500000000;
+set hive.optimize.sort.dynamic.partition=true;
+set hive.exec.max.dynamic.partitions=10000;
+set hive.exec.max.dynamic.partitions.pernode=2000;
+set hive.load.dynamic.partitions.thread=20;
+set hive.mv.files.thread=25;
+set hive.blobstore.optimizations.enabled=false;
+set parquet.compression=snappy;
+
+--Time to convert and export. This step will run for a long time, depending on your data size and cluster size. 
+INSERT INTO TABLE tblpq_fvtaproebecam partition(codpais, aniocampana)
+SELECT codcanalventa,
+       aniocampanaref,
+       pkebelista,
+       pkpedido,
+       pktipooferta,
+       pkterritorio,
+       pkproducto,
+       codventa,
+       codtipodocumento,
+       codacceso,
+       realuuvendidas,
+       realuufaltantes,
+       realuudevueltas,
+       realuuanuladas,
+       realvtamnneto,
+       realvtamnfactura,
+       realvtamncatalogo,
+       realvtamnfaltneto,
+       realvtamnfaltcatalogo,
+       realdevmnneto,
+       realdevmncatalogo,
+       realanulmnneto,
+       realanulmncatalogo,
+       costoreposicionmn,
+       realtcpromedio,
+       oportunidadahorromn,
+       descuento,
+       codpalancapersonalizacion,
+       despalancapersonalizacion,
+       codorigenpedidoweb,
+       esttcpromedio,
+       codebelista,
+       codtipooferta,
+       codsap,
+       codterritorio,
+       nrofactura,
+       medioventa,
+       codpais,
+       aniocampana
+FROM tmp_fvtaproebecam;
+
+
