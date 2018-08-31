@@ -85,7 +85,8 @@ CREATE EXTERNAL TABLE tblpq_fvtaproebecam(
    medioventa                 varchar(3))
 PARTITIONED BY(codpais varchar(2), aniocampana varchar(6))
 STORED AS PARQUET
-LOCATION 's3://hdata-belcorp/parquet/';
+LOCATION 's3://hdata-belcorp/parquet/'
+tblproperties ("parquet.compress"="SNAPPY");
 
 
 set hive.exec.dynamic.partition.mode=nonstrict;
