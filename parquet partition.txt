@@ -89,15 +89,14 @@ LOCATION 's3://hdata-belcorp/parquet/'
 tblproperties ("parquet.compress"="SNAPPY");
 
 
-set hive.exec.dynamic.partition.mode=nonstrict;
-set hive.exec.reducers.bytes.per.reducer=500000000;
-set hive.optimize.sort.dynamic.partition=true;
-set hive.exec.max.dynamic.partitions=10000;
-set hive.exec.max.dynamic.partitions.pernode=2000;
-set hive.load.dynamic.partitions.thread=20;
-set hive.mv.files.thread=25;
-set hive.blobstore.optimizations.enabled=false;
-set parquet.compression=snappy;
+--set hive.exec.reducers.bytes.per.reducer=500000000;
+--set hive.optimize.sort.dynamic.partition=true;
+--set hive.exec.max.dynamic.partitions=10000;
+--set hive.exec.max.dynamic.partitions.pernode=2000;
+--set hive.load.dynamic.partitions.thread=20;
+--set hive.mv.files.thread=25;
+--set hive.blobstore.optimizations.enabled=false;
+
 
 --Time to convert and export. This step will run for a long time, depending on your data size and cluster size.
 INSERT INTO TABLE tblpq_fvtaproebecam partition(codpais, aniocampana)
