@@ -1,0 +1,110 @@
+CREATE EXTERNAL TABLE cm_ventas_consultora(
+   codpais                    varchar(2),
+   aniocampana                varchar(6),
+   codebelista                varchar(15),
+   realventa_dolares          float,
+   realuuvendidas             integer,
+   realvtamnneto              float
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
+LOCATION 's3://hdata-belcorp/data-campaign-manager/ventas/';
+
+msck repair table cm_ventas_consultora;
+
+CREATE EXTERNAL TABLE cm_segmentacion_rolling(
+   codpais                    varchar(2),
+   aniocampana                varchar(6),
+   codebelista                varchar(15),
+   segmentacion_rolling       varchar(150)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
+LOCATION 's3://hdata-belcorp/data-campaign-manager/segmentacion-rolling/';
+
+msck repair table cm_segmentacion_rolling;
+
+CREATE EXTERNAL TABLE cm_producto(
+   codpais                    varchar(2),
+   aniocampana                varchar(6),
+   cuv                        varchar(6),
+   cuc                        varchar(20),
+   codproducto                varchar(18),
+   desproducto                varchar(100),
+   desunidadnegocio           varchar(100),
+   desmarca                   varchar(100),
+   descategoria               varchar(100),
+   desclase                   varchar(100),
+   desproductogenericoi       varchar(100),
+   desproductogenericoii      varchar(100)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
+LOCATION 's3://hdata-belcorp/data-campaign-manager/producto/';
+
+msck repair table cm_producto;
+
+--partition tables
+
+CREATE EXTERNAL TABLE tblpq_cm_ventas_consultora(
+   codebelista                varchar(15),
+   realventa_dolares          float,
+   realuuvendidas             integer,
+   realvtamnneto              float)
+PARTITIONED BY(codpais varchar(2), aniocampana varchar(6))
+STORED AS PARQUET
+LOCATION 's3://hdata-belcorp/parquet-campaign-manager/ventas-consultora/'
+tblproperties ("parquet.compress"="SNAPPY");
+
+CREATE EXTERNAL TABLE tblpq_cm_segmentacion_rolling(
+   codebelista                varchar(15),
+   segmentacion_rolling       varchar(150))
+PARTITIONED BY(codpais varchar(2), aniocampana varchar(6))
+STORED AS PARQUET
+LOCATION 's3://hdata-belcorp/parquet-campaign-manager/segmentacion-rolling/'
+tblproperties ("parquet.compress"="SNAPPY");
+
+CREATE EXTERNAL TABLE tblpq_cm_producto(
+   cuv                        varchar(6),
+   cuc                        varchar(20),
+   codproducto                varchar(18),
+   desproducto                varchar(100),
+   desunidadnegocio           varchar(100),
+   desmarca                   varchar(100),
+   descategoria               varchar(100),
+   desclase                   varchar(100),
+   desproductogenericoi       varchar(100),
+   desproductogenericoii      varchar(100))
+PARTITIONED BY(codpais varchar(2), aniocampana varchar(6))
+STORED AS PARQUET
+LOCATION 's3://hdata-belcorp/parquet-campaign-manager/producto/'
+tblproperties ("parquet.compress"="SNAPPY");
+
+--insert data into parquet tables
+INSERT INTO TABLE tblpq_cm_ventas_consultora partition(codpais, aniocampana)
+select
+  codebelista,
+  realventa_dolares,
+  realuuvendidas,
+  realvtamnneto,
+  codpais,
+  aniocampana
+from cm_ventas_consultora;
+
+INSERT INTO TABLE tblpq_cm_segmentacion_rolling partition(codpais, aniocampana)
+select
+  codebelista,
+  segmentacion_rolling,
+  codpais,
+  aniocampana
+from cm_segmentacion_rolling;
+
+INSERT INTO TABLE tblpq_cm_producto partition(codpais, aniocampana)
+select
+  cuv,
+  cuc,
+  codproducto,
+  desproducto,
+  desunidadnegocio,
+  desmarca,
+  descategoria,
+  desclase,
+  desproductogenericoi,
+  desproductogenericoii,
+  codpais,
+  aniocampana
+from cm_producto;
