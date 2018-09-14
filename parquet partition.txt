@@ -214,6 +214,20 @@ LOCATION 's3://hdata-belcorp/modelo-analitico/dwh_dtipooferta';
 
 msck repair table tmp_dtipooferta;
 
+CREATE TABLE EXTERNAL tmp_dpais
+(
+   codpais          varchar(2),
+   descripcionpais  varchar(30),
+   codpaisdm        varchar(2),
+   codcentro        varchar(4),
+   nrocampanas      integer,
+   despais          varchar(15)
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
+LOCATION 's3://hdata-belcorp/modelo-analitico/dwh_dpais';
+
+msck repair table tmp_dpais;
+
 CREATE EXTERNAL TABLE tblpq_fvtaproebecam(
    codcanalventa              varchar(2),
    aniocampanaref             varchar(6),
@@ -421,6 +435,19 @@ CREATE EXTERNAL TABLE tblpq_dproducto
 )
 STORED AS PARQUET
 LOCATION 's3://hdata-belcorp/modelo-analitico-parquet/dwh_dproducto/'
+tblproperties ("parquet.compress"="SNAPPY");
+
+CREATE TABLE EXTERNAL tblpq_dpais
+(
+   codpais          varchar(2),
+   descripcionpais  varchar(30),
+   codpaisdm        varchar(2),
+   codcentro        varchar(4),
+   nrocampanas      integer,
+   despais          varchar(15)
+)
+STORED AS PARQUET
+LOCATION 's3://hdata-belcorp/modelo-analitico-parquet/dwh_dpais/'
 tblproperties ("parquet.compress"="SNAPPY");
 
 --set hive.exec.reducers.bytes.per.reducer=500000000;
@@ -644,3 +671,13 @@ SELECT
    codjerq02                 ,
    descjerq02
 from tmp_dproducto;
+
+INSERT INTO TABLE tblpq_dpais
+SELECT
+  codpais,
+  descripcionpais,
+  codpaisdm,
+  codcentro,
+  nrocampanas,
+  despais
+FROM tmp_dpais;
