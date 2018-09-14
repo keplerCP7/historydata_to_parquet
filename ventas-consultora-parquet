@@ -4,7 +4,7 @@ CREATE EXTERNAL TABLE cm_ventas_consultora(
    codebelista                varchar(15),
    realventa_dolares          float,
    realuuvendidas             integer,
-   realvtamnneto              float
+   realvtamnneto              float)
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
 LOCATION 's3://hdata-belcorp/data-campaign-manager/ventas/';
 
@@ -14,7 +14,7 @@ CREATE EXTERNAL TABLE cm_segmentacion_rolling(
    codpais                    varchar(2),
    aniocampana                varchar(6),
    codebelista                varchar(15),
-   segmentacion_rolling       varchar(150)
+   segmentacion_rolling       varchar(150))
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
 LOCATION 's3://hdata-belcorp/data-campaign-manager/segmentacion-rolling/';
 
@@ -32,7 +32,7 @@ CREATE EXTERNAL TABLE cm_producto(
    descategoria               varchar(100),
    desclase                   varchar(100),
    desproductogenericoi       varchar(100),
-   desproductogenericoii      varchar(100)
+   desproductogenericoii      varchar(100))
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
 LOCATION 's3://hdata-belcorp/data-campaign-manager/producto/';
 
