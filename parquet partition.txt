@@ -47,8 +47,8 @@ msck repair table tmp_fvtaproebecam;
 
 CREATE EXTERNAL TABLE tmp_dproducto
 (
-   codsap                    varchar(9)       NOT NULL,
-   codproducto               varchar(9)       NOT NULL,
+   codsap                    varchar(9),
+   codproducto               varchar(9),
    desproducto               varchar(65535),
    cuc                       varchar(15),
    descripcuc                varchar(65535),
@@ -159,12 +159,12 @@ msck repair table tmp_dproducto;
 
 CREATE EXTERNAL TABLE tmp_dmatrizcampana
 (
-   codpais               character(2)    NOT NULL,
-   codcanalventa         character(2)    NOT NULL,
-   aniocampana           character(6)    NOT NULL,
-   pkproducto            integer         NOT NULL,
-   pktipooferta          smallint        NOT NULL,
-   codventa              character(6)    NOT NULL,
+   codpais                varchar(2),
+   codcanalventa          varchar(2),
+   aniocampana            varchar(6),
+   pkproducto            integer,
+   pktipooferta          smallint,
+   codventa               varchar(6),
    destipooferta         varchar(100),
    destipocatalogo       varchar(100),
    desargventa           varchar(100),
@@ -174,18 +174,18 @@ CREATE EXTERNAL TABLE tmp_dmatrizcampana
    desobservaciones      varchar(100),
    paginacatalogo        integer,
    nropaginas            integer,
-   fotoproducto          character(1),
-   fotomodelo            character(1),
-   preciooferta          numeric(12,2),
-   preciovtapropuestomn  numeric(12,2),
-   precionormalmn        numeric(12,2),
-   codcatalogo           character(2),
+   fotoproducto           varchar(1),
+   fotomodelo             varchar(1),
+   preciooferta           decimal(12,2),
+   preciovtapropuestomn   decimal(12,2),
+   precionormalmn         decimal(12,2),
+   codcatalogo            varchar(2),
    descatalogo           varchar(50),
    nropagina             integer,
-   codestrategia         character(3),
+   codestrategia          varchar(3),
    numoferta             integer,
    vehiculoventa         varchar(100),
-   codtipocatalogo       character(2),
+   codtipocatalogo        varchar(2),
    codsap                varchar(18),
    codtipooferta         varchar(4)
 )
@@ -196,17 +196,17 @@ msck repair table tmp_dmatrizcampana;
 
 CREATE EXTERNAL TABLE tmp_dtipooferta
 (
-   codpais         character(2)   NOT NULL,
-   codcanalventa   character(2)   NOT NULL,
-   pktipooferta    smallint       NOT NULL,
+   codpais          varchar(2),
+   codcanalventa    varchar(2),
+   pktipooferta    smallint ,
    codtipooferta   varchar(4),
    abrtipooferta   varchar(20),
    destipooferta   varchar(50),
-   codtipoprofit   character(2),
+   codtipoprofit    varchar(2),
    destipoprofit   varchar(20),
-   codsubgrupoto1  character(2),
+   codsubgrupoto1   varchar(2),
    dessubgrupoto1  varchar(20),
-   codsubgrupoto2  character(2),
+   codsubgrupoto2   varchar(2),
    dessubgrupoto2  varchar(20)
 )
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
@@ -254,15 +254,15 @@ CREATE EXTERNAL TABLE tblpq_fvtaproebecam(
    medioventa                 varchar(3))
 PARTITIONED BY(codpais varchar(2), aniocampana varchar(6))
 STORED AS PARQUET
-LOCATION 's3://hdata-belcorp/modelo-analitico-parquet/dwh_fvtaproebecam/dwh_fvtaproebecam-'
+LOCATION 's3://hdata-belcorp/modelo-analitico-parquet/dwh_fvtaproebecam/'
 tblproperties ("parquet.compress"="SNAPPY");
 
 CREATE EXTERNAL TABLE tblpq_dmatrizcampana
 (
-   codcanalventa         character(2)    NOT NULL,
-   pkproducto            integer         NOT NULL,
-   pktipooferta          smallint        NOT NULL,
-   codventa              character(6)    NOT NULL,
+   codcanalventa          varchar(2),
+   pkproducto            integer     ,
+   pktipooferta          smallint    ,
+   codventa               varchar(6),
    destipooferta         varchar(100),
    destipocatalogo       varchar(100),
    desargventa           varchar(100),
@@ -272,50 +272,50 @@ CREATE EXTERNAL TABLE tblpq_dmatrizcampana
    desobservaciones      varchar(100),
    paginacatalogo        integer,
    nropaginas            integer,
-   fotoproducto          character(1),
-   fotomodelo            character(1),
-   preciooferta          numeric(12,2),
-   preciovtapropuestomn  numeric(12,2),
-   precionormalmn        numeric(12,2),
-   codcatalogo           character(2),
+   fotoproducto           varchar(1),
+   fotomodelo             varchar(1),
+   preciooferta           decimal(12,2),
+   preciovtapropuestomn   decimal(12,2),
+   precionormalmn         decimal(12,2),
+   codcatalogo            varchar(2),
    descatalogo           varchar(50),
    nropagina             integer,
-   codestrategia         character(3),
+   codestrategia          varchar(3),
    numoferta             integer,
    vehiculoventa         varchar(100),
-   codtipocatalogo       character(2),
+   codtipocatalogo        varchar(2),
    codsap                varchar(18),
    codtipooferta         varchar(4)
 )
 PARTITIONED BY(codpais varchar(2), aniocampana varchar(6))
 STORED AS PARQUET
-LOCATION 's3://hdata-belcorp/modelo-analitico-parquet/dwh_dmatrizcampana/dwh_dmatrizcampana-'
+LOCATION 's3://hdata-belcorp/modelo-analitico-parquet/dwh_dmatrizcampana/'
 tblproperties ("parquet.compress"="SNAPPY");
 
 CREATE EXTERNAL TABLE tblpq_dtipooferta
 (
-   codpais         character(2)   NOT NULL,
-   codcanalventa   character(2)   NOT NULL,
-   pktipooferta    smallint       NOT NULL,
+   codpais          varchar(2)   ,
+   codcanalventa    varchar(2),
+   pktipooferta    smallint  ,
    codtipooferta   varchar(4),
    abrtipooferta   varchar(20),
    destipooferta   varchar(50),
-   codtipoprofit   character(2),
+   codtipoprofit    varchar(2),
    destipoprofit   varchar(20),
-   codsubgrupoto1  character(2),
+   codsubgrupoto1   varchar(2),
    dessubgrupoto1  varchar(20),
-   codsubgrupoto2  character(2),
+   codsubgrupoto2   varchar(2),
    dessubgrupoto2  varchar(20)
 )
 PARTITIONED BY(codpais varchar(2))
 STORED AS PARQUET
-LOCATION 's3://hdata-belcorp/modelo-analitico-parquet/dwh_dtipooferta/dwh_dtipooferta-'
+LOCATION 's3://hdata-belcorp/modelo-analitico-parquet/dwh_dtipooferta/'
 tblproperties ("parquet.compress"="SNAPPY");
 
 CREATE EXTERNAL TABLE tblpq_dproducto
 (
-   codsap                    varchar(9)       NOT NULL,
-   codproducto               varchar(9)       NOT NULL,
+   codsap                    varchar(9),
+   codproducto               varchar(9),
    desproducto               varchar(65535),
    cuc                       varchar(15),
    descripcuc                varchar(65535),
@@ -420,7 +420,7 @@ CREATE EXTERNAL TABLE tblpq_dproducto
    descjerq02                varchar(65535)
 )
 STORED AS PARQUET
-LOCATION 's3://hdata-belcorp/modelo-analitico-parquet/dwh_dproducto/dwh_dproducto-'
+LOCATION 's3://hdata-belcorp/modelo-analitico-parquet/dwh_dproducto/'
 tblproperties ("parquet.compress"="SNAPPY");
 
 --set hive.exec.reducers.bytes.per.reducer=500000000;
@@ -430,6 +430,8 @@ tblproperties ("parquet.compress"="SNAPPY");
 --set hive.load.dynamic.partitions.thread=20;
 --set hive.mv.files.thread=25;
 --set hive.blobstore.optimizations.enabled=false;
+
+set hive.exec.dynamic.partition.mode=nonstrict;
 
 
 --Time to convert and export. This step will run for a long time, depending on your data size and cluster size.
