@@ -214,7 +214,7 @@ LOCATION 's3://hdata-belcorp/modelo-analitico/dwh_dtipooferta';
 
 msck repair table tmp_dtipooferta;
 
-CREATE TABLE EXTERNAL tmp_dpais
+CREATE EXTERNAL TABLE tmp_dpais
 (
    codpais          varchar(2),
    descripcionpais  varchar(30),
@@ -308,7 +308,6 @@ tblproperties ("parquet.compress"="SNAPPY");
 
 CREATE EXTERNAL TABLE tblpq_dtipooferta
 (
-   codpais          varchar(2)   ,
    codcanalventa    varchar(2),
    pktipooferta    smallint  ,
    codtipooferta   varchar(4),
@@ -437,7 +436,7 @@ STORED AS PARQUET
 LOCATION 's3://hdata-belcorp/modelo-analitico-parquet/dwh_dproducto/'
 tblproperties ("parquet.compress"="SNAPPY");
 
-CREATE TABLE EXTERNAL tblpq_dpais
+CREATE EXTERNAL TABLE tblpq_dpais
 (
    codpais          varchar(2),
    descripcionpais  varchar(30),
@@ -452,13 +451,14 @@ tblproperties ("parquet.compress"="SNAPPY");
 
 --set hive.exec.reducers.bytes.per.reducer=500000000;
 --set hive.optimize.sort.dynamic.partition=true;
---set hive.exec.max.dynamic.partitions=10000;
---set hive.exec.max.dynamic.partitions.pernode=2000;
---set hive.load.dynamic.partitions.thread=20;
---set hive.mv.files.thread=25;
+set hive.exec.max.dynamic.partitions=10000;
+set hive.exec.max.dynamic.partitions.pernode=2000;
+set hive.load.dynamic.partitions.thread=20;
+set hive.mv.files.thread=25;
+set hive.exec.dynamic.partition.mode=nonstrict;
 --set hive.blobstore.optimizations.enabled=false;
 
-set hive.exec.dynamic.partition.mode=nonstrict;
+
 
 
 --Time to convert and export. This step will run for a long time, depending on your data size and cluster size.
@@ -505,63 +505,54 @@ SELECT codcanalventa,
 FROM tmp_fvtaproebecam;
 
 INSERT INTO TABLE tblpq_dmatrizcampana partition(codpais, aniocampana)
-SELECT codcanalventa,
-       aniocampanaref,
-       pkebelista,
-       pkpedido,
-       pktipooferta,
-       pkterritorio,
-       pkproducto,
-       codventa,
-       codtipodocumento,
-       codacceso,
-       realuuvendidas,
-       realuufaltantes,
-       realuudevueltas,
-       realuuanuladas,
-       realvtamnneto,
-       realvtamnfactura,
-       realvtamncatalogo,
-       realvtamnfaltneto,
-       realvtamnfaltcatalogo,
-       realdevmnneto,
-       realdevmncatalogo,
-       realanulmnneto,
-       realanulmncatalogo,
-       costoreposicionmn,
-       realtcpromedio,
-       oportunidadahorromn,
-       descuento,
-       codpalancapersonalizacion,
-       despalancapersonalizacion,
-       codorigenpedidoweb,
-       esttcpromedio,
-       codebelista,
-       codtipooferta,
-       codsap,
-       codterritorio,
-       nrofactura,
-       medioventa,
-       codpais,
-       aniocampana
+SELECT
+codcanalventa         ,
+pkproducto            ,
+pktipooferta          ,
+codventa              ,
+destipooferta         ,
+destipocatalogo       ,
+desargventa           ,
+desubicacioncatalogo  ,
+desladopag            ,
+desexposicion         ,
+desobservaciones      ,
+paginacatalogo        ,
+nropaginas            ,
+fotoproducto           ,
+fotomodelo             ,
+preciooferta           ,
+preciovtapropuestomn   ,
+precionormalmn         ,
+codcatalogo            ,
+descatalogo           ,
+nropagina             ,
+codestrategia          ,
+numoferta             ,
+vehiculoventa         ,
+codtipocatalogo        ,
+codsap                ,
+codtipooferta        ,
+codpais             ,
+aniocampana
 FROM tmp_dmatrizcampana;
 
 
 
 INSERT INTO TABLE tblpq_dtipooferta partition(codpais)
 SELECT
-   codpais         ,
-   codcanalventa   ,
-   pktipooferta    ,
-   codtipooferta   ,
-   abrtipooferta   ,
-   destipooferta   ,
-   codtipoprofit   ,
-   destipoprofit   ,
-   codsubgrupoto1  ,
-   dessubgrupoto1  ,
-   codsubgrupoto2  ,
-   dessubgrupoto2
+codcanalventa,
+pktipooferta,
+codtipooferta,
+abrtipooferta,
+destipooferta,
+codtipoprofit,
+destipoprofit,
+codsubgrupoto1,
+dessubgrupoto1,
+codsubgrupoto2,
+dessubgrupoto2,
+codpais
 from tmp_dtipooferta;
 
 INSERT INTO TABLE tblpq_dproducto
