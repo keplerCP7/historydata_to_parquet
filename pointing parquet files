@@ -1,0 +1,30 @@
+CREATE EXTERNAL TABLE mdl_perfiloutput
+(
+   aniocampanaexposicion  varchar(6),
+   codebelista            varchar(15),
+   pc_lb_pup              DOUBLE,
+   pc_ek_pup              DOUBLE,
+   pc_cz_pup              DOUBLE,
+   pc_cp_pup              DOUBLE,
+   pc_fg_pup              DOUBLE,
+   pc_mq_pup              DOUBLE,
+   pc_tc_pup              DOUBLE,
+   pc_tf_pup              DOUBLE,
+   lb_ppu                 DOUBLE,
+   ek_ppu                 DOUBLE,
+   cz_ppu                 DOUBLE,
+   cp_ppu                 DOUBLE,
+   fg_ppu                 DOUBLE,
+   mq_ppu                 DOUBLE,
+   tc_ppu                 DOUBLE,
+   tf_ppu                 DOUBLE,
+   perfil                 int
+)
+PARTITIONED BY(codpais varchar(2), aniocampanaproceso varchar(6))
+ROW FORMAT SERDE 'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe'
+STORED AS INPUTFORMAT 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat'
+OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
+LOCATION 's3://hdata-belcorp/modelo-analitico-parquet/perfiles-output/'
+tblproperties ("parquet.compress"="SNAPPY");
+
+MSCK REPAIR TABLE mdl_perfiloutput;

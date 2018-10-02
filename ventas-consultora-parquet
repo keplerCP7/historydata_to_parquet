@@ -38,6 +38,27 @@ LOCATION 's3://hdata-belcorp/data-campaign-manager/producto/';
 
 msck repair table cm_producto;
 
+
+CREATE EXTERNAL TABLE cm_ofertas_recomendacion (
+  codpais                varchar(256),
+  aniocampanaproceso     varchar(256),
+  aniocampanaexposicion  varchar(256),
+  codebelista            varchar(256),
+  codcuc                 varchar(256),
+  formato                varchar(256),
+  idoferta               varchar(256),
+  nrounidades            integer,
+  descuento              float,
+  orden                  integer,
+  flagofertavalida       integer,
+  palanca                varchar(256),
+  ofertarevista          integer
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
+LOCATION 's3://hdata-belcorp/apd_output/';
+
+msck repair table cm_ofertas_recomendacion;
+
 --partition tables
 
 CREATE EXTERNAL TABLE tblpq_cm_ventas_consultora(
@@ -74,6 +95,25 @@ STORED AS PARQUET
 LOCATION 's3://hdata-belcorp/parquet-campaign-manager/producto/'
 tblproperties ("parquet.compress"="SNAPPY");
 
+CREATE EXTERNAL TABLE tblpq_ofertas_recomendacion (
+  aniocampanaexposicion  varchar(256),
+  codebelista            varchar(256),
+  codcuc                 varchar(256),
+  formato                varchar(256),
+  idoferta               varchar(256),
+  nrounidades            integer,
+  descuento              float,
+  orden                  integer,
+  flagofertavalida       integer,
+  palanca                varchar(256),
+  ofertarevista          integer
+)
+PARTITIONED BY(codpais varchar(2), aniocampanaproceso varchar(6))
+STORED AS PARQUET
+LOCATION 's3://hdata-belcorp/parquet-campaign-manager/apd/'
+tblproperties ("parquet.compress"="SNAPPY");
+
+
 --insert data into parquet tables
 INSERT INTO TABLE tblpq_cm_ventas_consultora partition(codpais, aniocampana)
 select
@@ -108,3 +148,20 @@ select
   codpais,
   aniocampana
 from cm_producto;
+
+INSERT INTO TABLE tblpq_ofertas_recomendacion partition(codpais, aniocampanaproceso)
+SELECT
+  aniocampanaexposicion,
+  codebelista,
+  codcuc,
+  formato,
+  idoferta,
+  nrounidades,
+  descuento,
+  orden,
+  flagofertavalida,
+  palanca,
+  ofertarevista,
+  codpais,
+  aniocampanaproceso
+from cm_ofertas_recomendacion;
