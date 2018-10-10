@@ -8,7 +8,7 @@ CREATE EXTERNAL TABLE tmp_fvtaproebecam(
    pkebelista                 integer,
    pkpedido                   integer,
    pktipooferta               smallint,
-   pkterritorio               integer,
+   pkterritorio                integer,
    pkproducto                 integer,
    codventa                   varchar(6),
    codtipodocumento           varchar(1),
@@ -36,7 +36,7 @@ CREATE EXTERNAL TABLE tmp_fvtaproebecam(
    esttcpromedio              decimal,
    codebelista                varchar(15),
    codtipooferta              varchar(4),
-   codsap                     varchar(18),
+   codsap    loca                 varchar(18),
    codterritorio              varchar(10),
    nrofactura                 varchar(11),
    medioventa                 varchar(3))
