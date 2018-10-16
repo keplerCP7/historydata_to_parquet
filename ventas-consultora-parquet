@@ -25,14 +25,22 @@ CREATE EXTERNAL TABLE cm_producto(
    aniocampana                varchar(6),
    cuv                        varchar(6),
    cuc                        varchar(20),
-   codproducto                varchar(18),
+   codsap                varchar(18),
    desproducto                varchar(100),
    desunidadnegocio           varchar(100),
+   codmarca                   varchar(100),
    desmarca                   varchar(100),
+   codcategoria               varchar(100),
    descategoria               varchar(100),
+   codclase                   varchar(100),
    desclase                   varchar(100),
    desproductogenericoi       varchar(100),
-   desproductogenericoii      varchar(100))
+   desproductogenericoii      varchar(100),
+   preciooferta               float,
+   precionormalmn             float,
+   costo_unitario             float,
+   tipo_cambio_real           float,
+   tipo_cambio_estimado_promedio float)
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
 LOCATION 's3://hdata-belcorp/data-campaign-manager/producto/';
 
@@ -58,6 +66,21 @@ ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
 LOCATION 's3://hdata-belcorp/apd_output/';
 
 msck repair table cm_ofertas_recomendacion;
+
+CREATE EXTERNAL TABLE cm_consultora (
+  codpais                varchar(2),
+  aniocampana            varchar(6),
+  codebelista            varchar(15),
+  codterritorio          varchar(10),
+  flagactiva             integer,
+  codzona                varchar(6),
+  deszona                varchar(130),
+  codregion              varchar(3),
+  desregion              varchar(130))
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
+LOCATION 's3://hdata-belcorp/consultora/';
+
+msck repair table cm_consultora;
 
 --partition tables
 
@@ -85,11 +108,19 @@ CREATE EXTERNAL TABLE tblpq_cm_producto(
    codproducto                varchar(18),
    desproducto                varchar(100),
    desunidadnegocio           varchar(100),
+   codmarca                   varchar(100),
    desmarca                   varchar(100),
+   codcategoria               varchar(100),
    descategoria               varchar(100),
+   codclase                   varchar(100),
    desclase                   varchar(100),
    desproductogenericoi       varchar(100),
-   desproductogenericoii      varchar(100))
+   desproductogenericoii      varchar(100),
+   preciooferta               float,
+   precionormalmn             float,
+   costo_unitario             float,
+   tipo_cambio_real           float,
+   tipo_cambio_estimado_promedio float)
 PARTITIONED BY(codpais varchar(2), aniocampana varchar(6))
 STORED AS PARQUET
 LOCATION 's3://hdata-belcorp/parquet-campaign-manager/producto/'
@@ -112,6 +143,20 @@ PARTITIONED BY(codpais varchar(2), aniocampanaproceso varchar(6))
 STORED AS PARQUET
 LOCATION 's3://hdata-belcorp/parquet-campaign-manager/apd/'
 tblproperties ("parquet.compress"="SNAPPY");
+
+CREATE EXTERNAL TABLE tblpq_consultora (
+codebelista            varchar(15),
+codterritorio          varchar(10),
+flagactiva             integer,
+codzona                varchar(6),
+deszona                varchar(130),
+codregion              varchar(3),
+desregion              varchar(130))
+PARTITIONED BY(codpais varchar(2), aniocampana varchar(6))
+STORED AS PARQUET
+LOCATION 's3://hdata-belcorp/parquet-campaign-manager/consultora/'
+tblproperties ("parquet.compress"="SNAPPY");
+
 
 
 --insert data into parquet tables
@@ -165,3 +210,16 @@ SELECT
   codpais,
   aniocampanaproceso
 from cm_ofertas_recomendacion;
+
+INSERT INTO TABLE tblpq_consultora partition(codpais, aniocampana)
+SELECT
+  codebelista,
+  codterritorio,
+  flagactiva,
+  codzona,
+  deszona,
+  codregion,
+  desregion,
+  codpais,
+  aniocampana
+from cm_consultora;
