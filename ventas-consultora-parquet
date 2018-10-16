@@ -25,7 +25,7 @@ CREATE EXTERNAL TABLE cm_producto(
    aniocampana                varchar(6),
    cuv                        varchar(6),
    cuc                        varchar(20),
-   codsap                varchar(18),
+   codsap                     varchar(18),
    desproducto                varchar(100),
    desunidadnegocio           varchar(100),
    codmarca                   varchar(100),
@@ -57,10 +57,7 @@ CREATE EXTERNAL TABLE cm_ofertas_recomendacion (
   idoferta               varchar(256),
   nrounidades            integer,
   descuento              float,
-  orden                  integer,
-  flagofertavalida       integer,
-  palanca                varchar(256),
-  ofertarevista          integer
+  orden                  integer
 )
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
 LOCATION 's3://hdata-belcorp/apd_output/';
@@ -105,7 +102,7 @@ tblproperties ("parquet.compress"="SNAPPY");
 CREATE EXTERNAL TABLE tblpq_cm_producto(
    cuv                        varchar(6),
    cuc                        varchar(20),
-   codproducto                varchar(18),
+   codsap                     varchar(18),
    desproducto                varchar(100),
    desunidadnegocio           varchar(100),
    codmarca                   varchar(100),
@@ -134,10 +131,7 @@ CREATE EXTERNAL TABLE tblpq_ofertas_recomendacion (
   idoferta               varchar(256),
   nrounidades            integer,
   descuento              float,
-  orden                  integer,
-  flagofertavalida       integer,
-  palanca                varchar(256),
-  ofertarevista          integer
+  orden                  integer
 )
 PARTITIONED BY(codpais varchar(2), aniocampanaproceso varchar(6))
 STORED AS PARQUET
@@ -182,14 +176,22 @@ INSERT INTO TABLE tblpq_cm_producto partition(codpais, aniocampana)
 select
   cuv,
   cuc,
-  codproducto,
+  codsap,
   desproducto,
   desunidadnegocio,
+  codmarca,
   desmarca,
+  codcategoria,
   descategoria,
+  codclase,
   desclase,
   desproductogenericoi,
   desproductogenericoii,
+  preciooferta,
+  precionormalmn,
+  costo_unitario,
+  tipo_cambio_real,
+  tipo_cambio_estimado_promedio,
   codpais,
   aniocampana
 from cm_producto;
@@ -204,9 +206,6 @@ SELECT
   nrounidades,
   descuento,
   orden,
-  flagofertavalida,
-  palanca,
-  ofertarevista,
   codpais,
   aniocampanaproceso
 from cm_ofertas_recomendacion;
