@@ -75,7 +75,7 @@ CREATE EXTERNAL TABLE cm_consultora (
   codregion              varchar(3),
   desregion              varchar(130))
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
-LOCATION 's3://hdata-belcorp/consultora/';
+LOCATION 's3://hdata-belcorp/data-campaign-manager/consultora/';
 
 msck repair table cm_consultora;
 
@@ -138,7 +138,7 @@ STORED AS PARQUET
 LOCATION 's3://hdata-belcorp/parquet-campaign-manager/apd/'
 tblproperties ("parquet.compress"="SNAPPY");
 
-CREATE EXTERNAL TABLE tblpq_consultora (
+CREATE EXTERNAL TABLE tblpq_cm_consultora (
 codebelista            varchar(15),
 codterritorio          varchar(10),
 flagactiva             integer,
@@ -210,7 +210,7 @@ SELECT
   aniocampanaproceso
 from cm_ofertas_recomendacion;
 
-INSERT INTO TABLE tblpq_consultora partition(codpais, aniocampana)
+INSERT INTO TABLE tblpq_cm_consultora partition(codpais, aniocampana)
 SELECT
   codebelista,
   codterritorio,
