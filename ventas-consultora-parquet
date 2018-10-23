@@ -23,6 +23,9 @@ msck repair table cm_segmentacion_rolling;
 CREATE EXTERNAL TABLE cm_producto(
    codpais                    varchar(2),
    aniocampana                varchar(6),
+   codTipoOferta              varchar(4),
+   DesTipoOferta              varchar(100),
+   Descatalogo                varchar(50),
    cuv                        varchar(6),
    cuc                        varchar(20),
    codsap                     varchar(18),
@@ -81,6 +84,13 @@ msck repair table cm_consultora;
 
 --partition tables
 
+set hive.exec.max.dynamic.partitions=10000;
+set hive.exec.max.dynamic.partitions.pernode=2000;
+set hive.load.dynamic.partitions.thread=20;
+set hive.mv.files.thread=25;
+set hive.exec.dynamic.partition.mode=nonstrict;
+
+
 CREATE EXTERNAL TABLE tblpq_cm_ventas_consultora(
    codebelista                varchar(15),
    realventa_dolares          float,
@@ -100,6 +110,9 @@ LOCATION 's3://hdata-belcorp/parquet-campaign-manager/segmentacion-rolling/'
 tblproperties ("parquet.compress"="SNAPPY");
 
 CREATE EXTERNAL TABLE tblpq_cm_producto(
+   codTipoOferta              varchar(4),
+   DesTipoOferta              varchar(100),
+   Descatalogo                varchar(50),
    cuv                        varchar(6),
    cuc                        varchar(20),
    codsap                     varchar(18),
@@ -174,6 +187,9 @@ from cm_segmentacion_rolling;
 
 INSERT INTO TABLE tblpq_cm_producto partition(codpais, aniocampana)
 select
+  codTipoOferta,
+  DesTipoOferta,
+  Descatalogo,
   cuv,
   cuc,
   codsap,
