@@ -19,8 +19,8 @@ CREATE EXTERNAL TABLE corp_det_tactica_condicion(
   preciovtapropuestomn  decimal(34,4),
   precionormalmn        decimal(34,4),
   descomercialoferta    varchar(100))
-ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
-LOCATION 's3://belc-bigdata-landing-dlk-qas/forecast-data/Bigdata/HANABI/DET_TACTICA_CONDICION/';
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+LOCATION 's3://hdata-belcorp/data-campaign-manager/tactica-vinculada/det-tactica-condicion/';
 
 msck repair table corp_det_tactica_condicion;
 
@@ -46,8 +46,8 @@ CREATE EXTERNAL TABLE corp_det_tactica_oferta(
   preciovtapropuestomn  decimal(34,4),
   precionormalmn        decimal(34,4),
   descomercialoferta    varchar(100))
-ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
-LOCATION 's3://belc-bigdata-landing-dlk-qas/forecast-data/Bigdata/HANABI/DET_TACTICA_OFERTA/';
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+LOCATION 's3://hdata-belcorp/data-campaign-manager/tactica-vinculada/det-tactica-oferta/';
 
 msck repair table corp_det_tactica_oferta;
 
@@ -67,8 +67,8 @@ CREATE EXTERNAL TABLE corp_mae_tactica_condicion(
   rangoinfmn         decimal(34,4),
   rangosupmn         decimal(34,4),
   preciorango        decimal(34,4))
-ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
-LOCATION 's3://belc-bigdata-landing-dlk-qas/forecast-data/Bigdata/HANABI/MAE_TACTICA_CONDICION/';
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+LOCATION 's3://hdata-belcorp/data-campaign-manager/tactica-vinculada/mae-tactica-condicion/';
 
 msck repair table corp_mae_tactica_condicion;
 
@@ -84,16 +84,16 @@ CREATE EXTERNAL TABLE corp_mae_tactica_vinculada(
   desestrategia      varchar(50),
   codtipomedioventa  varchar(3),
   codtipotactica     integer)
-ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
-LOCATION 's3://belc-bigdata-landing-dlk-qas/forecast-data/Bigdata/HANABI/MAE_TACTICA_VINCULADA/';
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+LOCATION 's3://hdata-belcorp/data-campaign-manager/tactica-vinculada/mae-tactica-vinculada/';
 
 msck repair table corp_mae_tactica_vinculada;
 
 CREATE EXTERNAL TABLE corp_par_tipo_cuadre(
   tipocuadre  integer,
   descuadre   varchar(50))
-ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
-LOCATION 's3://belc-bigdata-landing-dlk-qas/forecast-data/Bigdata/HANABI/PAR_TIPO_CUADRE/';
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+LOCATION 's3://hdata-belcorp/data-campaign-manager/tactica-vinculada/par-tipo-cuadre/';
 
 msck repair table corp_par_tipo_cuadre;
 
@@ -103,8 +103,8 @@ CREATE EXTERNAL TABLE corp_par_tipo_tactica(
   destipotactica    varchar(50),
   destacticasicc    varchar(50),
   destacticaplanit  varchar(50))
-ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
-LOCATION 's3://belc-bigdata-landing-dlk-qas/forecast-data/Bigdata/HANABI/PAR_TIPO_TACTICA/';
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+LOCATION 's3://hdata-belcorp/data-campaign-manager/tactica-vinculada/par-tipo-tactica/';
 
 msck repair table corp_par_tipo_tactica;
 
@@ -137,7 +137,7 @@ CREATE EXTERNAL TABLE tblpq_corp_det_tactica_condicion(
   descomercialoferta    varchar(100))
 PARTITIONED BY(codpais varchar(2), aniocampana varchar(6))
 STORED AS PARQUET
-LOCATION 's3://belc-bigdata-landing-dlk-qas/forecast-data/Bigdata/HANABI-parquet/DET_TACTICA_CONDICION/'
+LOCATION 's3://hdata-belcorp/parquet-campaign-manager/tactica-vinculada/det-tactica-condicion/'
 tblproperties ("parquet.compress"="SNAPPY");
 
 CREATE EXTERNAL TABLE tblpq_corp_det_tactica_oferta(
@@ -162,7 +162,7 @@ CREATE EXTERNAL TABLE tblpq_corp_det_tactica_oferta(
   descomercialoferta    varchar(100))
 PARTITIONED BY(codpais varchar(2), aniocampana varchar(6))
 STORED AS PARQUET
-LOCATION 's3://belc-bigdata-landing-dlk-qas/forecast-data/Bigdata/HANABI-parquet/det_tactica_oferta/'
+LOCATION 's3://hdata-belcorp/parquet-campaign-manager/tactica-vinculada/det-tactica-oferta/'
 tblproperties ("parquet.compress"="SNAPPY");
 
 
@@ -182,7 +182,7 @@ CREATE EXTERNAL TABLE tblpq_corp_mae_tactica_condicion(
   preciorango        decimal(34,4))
 PARTITIONED BY(codpais varchar(2), aniocampana varchar(6))
 STORED AS PARQUET
-LOCATION 's3://belc-bigdata-landing-dlk-qas/forecast-data/Bigdata/HANABI-parquet/mae_tactica_condicion/'
+LOCATION 's3://hdata-belcorp/parquet-campaign-manager/tactica-vinculada/mae-tactica_condicion/'
 tblproperties ("parquet.compress"="SNAPPY");
 
 CREATE EXTERNAL TABLE tblpq_corp_mae_tactica_vinculada(
@@ -197,14 +197,14 @@ CREATE EXTERNAL TABLE tblpq_corp_mae_tactica_vinculada(
   codtipotactica     integer)
 PARTITIONED BY(codpais varchar(2), aniocampana varchar(6))
 STORED AS PARQUET
-LOCATION 's3://belc-bigdata-landing-dlk-qas/forecast-data/Bigdata/HANABI-parquet/mae_tactica_vinculada/'
+LOCATION 's3://hdata-belcorp/parquet-campaign-manager/tactica-vinculada/mae-tactica-vinculada/'
 tblproperties ("parquet.compress"="SNAPPY");
 
 CREATE EXTERNAL TABLE tblpq_corp_par_tipo_cuadre(
   tipocuadre  integer,
   descuadre   varchar(50))
 STORED AS PARQUET
-LOCATION 's3://belc-bigdata-landing-dlk-qas/forecast-data/Bigdata/HANABI-parquet/par_tipo_cuadre/'
+LOCATION 's3://hdata-belcorp/parquet-campaign-manager/tactica-vinculada/par-tipo-cuadre/'
 tblproperties ("parquet.compress"="SNAPPY");
 
 CREATE EXTERNAL TABLE tblpq_corp_par_tipo_tactica(
@@ -214,7 +214,7 @@ CREATE EXTERNAL TABLE tblpq_corp_par_tipo_tactica(
   destacticasicc    varchar(50),
   destacticaplanit  varchar(50))
 STORED AS PARQUET
-LOCATION 's3://belc-bigdata-landing-dlk-qas/forecast-data/Bigdata/HANABI-parquet/par_tipo_tactica/'
+LOCATION 's3://hdata-belcorp/parquet-campaign-manager/tactica-vinculada/par-tipo-tactica/'
 tblproperties ("parquet.compress"="SNAPPY");
 
 
