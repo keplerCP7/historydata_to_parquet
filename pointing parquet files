@@ -28,3 +28,22 @@ LOCATION 's3://hdata-belcorp/modelo-analitico-parquet/perfiles-output/'
 tblproperties ("parquet.compress"="SNAPPY");
 
 MSCK REPAIR TABLE mdl_perfiloutput;
+
+CREATE EXTERNAL TABLE tblpq_ofertas_recomendacion (
+  aniocampanaexposicion  varchar(256),
+  codebelista            varchar(256),
+  codcuc                 varchar(256),
+  formato                varchar(256),
+  idoferta               varchar(256),
+  nrounidades            integer,
+  descuento              float,
+  orden                  integer
+)
+PARTITIONED BY(codpais varchar(2), aniocampanaproceso varchar(6))
+ROW FORMAT SERDE 'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe'
+STORED AS INPUTFORMAT 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat'
+OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
+LOCATION 's3://belc-bigdata-domain-dlk-qas/dom-apd/data/'
+tblproperties ("parquet.compress"="SNAPPY");
+
+MSCK REPAIR TABLE tblpq_ofertas_recomendacion;

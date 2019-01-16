@@ -226,7 +226,42 @@ CREATE EXTERNAL TABLE tmp_dpais
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
 LOCATION 's3://hdata-belcorp/modelo-analitico/dwh_dpais';
 
-msck repair table tmp_dpais;
+
+
+msck repair table tmp_arp_output_campaign;
+
+CREATE EXTERNAL TABLE tmp_arp_output_campaign
+(
+   escenario            integer,
+   aniocampana          varchar(6),
+   codpais              varchar(2),
+   codebelista          varchar(20),
+   tipopersonalizacion  varchar(3),
+   codtactica           varchar(6),
+   orden                integer,
+   probabilidad         float,
+   procesado            integer
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
+LOCATION 's3://hdata-belcorp/data-campaign-manager/arp-output-campaign';
+
+msck repair table tmp_arp_output_campaign;
+
+
+CREATE EXTERNAL TABLE tmp_arp_output_campaign
+(
+	escenario            integer,
+	aniocampana          varchar(6),
+	codpais              varchar(2),
+	codebelista          varchar(20),
+	tipopersonalizacion  varchar(3),
+	codtactica           varchar(6),
+	orden                integer,
+	probabilidad         float,
+	procesado            integer
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\,'
+LOCATION 's3://belc-bigdata-landing-dlk-qas/recommender/output';
 
 CREATE EXTERNAL TABLE tblpq_fvtaproebecam(
    codcanalventa              varchar(2),
@@ -324,6 +359,22 @@ PARTITIONED BY(codpais varchar(2))
 STORED AS PARQUET
 LOCATION 's3://hdata-belcorp/modelo-analitico-parquet/dwh_dtipooferta/'
 tblproperties ("parquet.compress"="SNAPPY");
+
+CREATE EXTERNAL TABLE tblpq_arp_campaign
+(
+    escenario            integer,
+    consultora           varchar(20),
+    palanca              varchar(3),
+    idoferta             varchar(6),
+    orden                integer,
+    probabilidad         float
+)
+PARTITIONED BY(pais varchar(2), campana varchar(6))
+STORED AS PARQUET
+LOCATION 's3://hdata-belcorp/parquet-campaign-manager/arp-output-campaign/'
+tblproperties ("parquet.compress"="SNAPPY");
+
+
 
 CREATE EXTERNAL TABLE tblpq_dproducto
 (
@@ -449,14 +500,14 @@ STORED AS PARQUET
 LOCATION 's3://hdata-belcorp/modelo-analitico-parquet/dwh_dpais/'
 tblproperties ("parquet.compress"="SNAPPY");
 
---set hive.exec.reducers.bytes.per.reducer=500000000;
---set hive.optimize.sort.dynamic.partition=true;
+set hive.exec.reducers.bytes.per.reducer=500000000;
+set hive.optimize.sort.dynamic.partition=true;
 set hive.exec.max.dynamic.partitions=10000;
 set hive.exec.max.dynamic.partitions.pernode=2000;
 set hive.load.dynamic.partitions.thread=20;
 set hive.mv.files.thread=25;
 set hive.exec.dynamic.partition.mode=nonstrict;
---set hive.blobstore.optimizations.enabled=false;
+set hive.blobstore.optimizations.enabled=false;
 
 
 
@@ -672,3 +723,17 @@ SELECT
   nrocampanas,
   despais
 FROM tmp_dpais;
+
+INSERT INTO TABLE tblpq_arp_campaign  partition(pais, campana)
+SELECT
+escenario,
+codebelista,
+tipopersonalizacion,
+codtactica,
+orden,
+probabilidad,
+codpais,
+aniocampana
+FROM tmp_arp_output_campaign;
+
+s3://hdata-belcorp/data-campaign-manager/arp-output-campaign

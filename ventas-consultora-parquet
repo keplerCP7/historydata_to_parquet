@@ -65,7 +65,7 @@ CREATE EXTERNAL TABLE cm_ofertas_recomendacion (
   orden                  integer
 )
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
-LOCATION 's3://hdata-belcorp/apd_output/';
+LOCATION 's3://belc-bigdata-landing-dlk-qas/unload_data/apd_output/';
 
 msck repair table cm_ofertas_recomendacion;
 
@@ -80,7 +80,7 @@ CREATE EXTERNAL TABLE cm_consultora (
   codregion              varchar(3),
   desregion              varchar(130))
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
-LOCATION 's3://hdata-belcorp/data-campaign-manager/consultora/';
+LOCATION 's3://belc-bigdata-landing-dlk-qas/unload_data/consultora/';
 
 msck repair table cm_consultora;
 
@@ -152,7 +152,7 @@ CREATE EXTERNAL TABLE tblpq_ofertas_recomendacion (
 )
 PARTITIONED BY(codpais varchar(2), aniocampanaproceso varchar(6))
 STORED AS PARQUET
-LOCATION 's3://hdata-belcorp/parquet-campaign-manager/apd/'
+LOCATION 's3://belc-bigdata-domain-dlk-qas/dom-apd/data/'
 tblproperties ("parquet.compress"="SNAPPY");
 
 CREATE EXTERNAL TABLE tblpq_cm_consultora (
@@ -165,7 +165,7 @@ codregion              varchar(3),
 desregion              varchar(130))
 PARTITIONED BY(codpais varchar(2), aniocampana varchar(6))
 STORED AS PARQUET
-LOCATION 's3://hdata-belcorp/parquet-campaign-manager/consultora/'
+LOCATION 's3://belc-bigdata-landing-dlk-qas/unload_data/parquet-campaign-manager/consultora/'
 tblproperties ("parquet.compress"="SNAPPY");
 
 
